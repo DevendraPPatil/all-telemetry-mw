@@ -6,16 +6,16 @@ const https = require('https');
 // where needed. getEncryptionKey is async for the same reason.
 async function getEncryptionKey() {
   const jose = await import('jose');
-  const encKeyStr = process.env.JOSE_ENCRYPTION_PRIVATE_KEY;
+  const encKeyStr = process.env.JOSE_ENCRYPTION_PRIVATE_KEY_V3;
   if (encKeyStr) {
     return jose.base64url.decode(encKeyStr);
   }
-  const secretKey = process.env.JOSE_SECRET || '';
+  const secretKey = process.env.JOSE_SECRET_V3 || '';
   return createHash('sha256').update(secretKey).digest();
 }
 
 function getSigningKey() {
-  const signinKeyStr = process.env.JOSE_SIGNIN_PRIVATE_KEY || '';
+  const signinKeyStr = process.env.JOSE_SIGNIN_PRIVATE_KEY_V3 || '';
   return new TextEncoder().encode(signinKeyStr);
 }
 
@@ -122,7 +122,7 @@ function postJson(urlStr, body) {
 // axl-login-service's tokenStatus API directly. Strictly no local fallback: either
 // axl-login-service answers true/false, or this throws AuthServiceUnavailableError.
 async function checkTokenStatus(userId, token) {
-  const loginServiceUrl = process.env.AXL_LOGIN_SERVICE_URL || '';
+  const loginServiceUrl = process.env.AXL_LOGIN_SERVICE_URL_V3 || '';
 
   try {
     const statusData = await postJson(loginServiceUrl, {
